@@ -1,8 +1,8 @@
 package br.com.dicasdeumdev.api.resource;
 
+import br.com.dicasdeumdev.api.domain.User;
 import br.com.dicasdeumdev.api.domain.dto.UserDto;
 import br.com.dicasdeumdev.api.service.UserService;
-import br.com.dicasdeumdev.api.service.exception.EmailExistenteFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,12 +36,18 @@ public class UserResource {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> save(@RequestBody UserDto obj) throws EmailExistenteFoundException {
+    public ResponseEntity<UserDto> save(@RequestBody UserDto obj) {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{id}")
                 .buildAndExpand(service.create(obj).getId()).toUri();
-
         return ResponseEntity.created(uri).build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDto> update(@PathVariable Integer id, @RequestBody UserDto userDto) {
+        userDto.setId(id);
+        User user = service.update(userDto);
+        return ResponseEntity.ok().body(mapper.map(user, UserDto.class));
     }
 
 }

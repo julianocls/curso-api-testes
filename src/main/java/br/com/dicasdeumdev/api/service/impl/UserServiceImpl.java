@@ -4,7 +4,7 @@ import br.com.dicasdeumdev.api.domain.User;
 import br.com.dicasdeumdev.api.domain.dto.UserDto;
 import br.com.dicasdeumdev.api.repository.UserRepository;
 import br.com.dicasdeumdev.api.service.UserService;
-import br.com.dicasdeumdev.api.service.exception.EmailExistenteFoundException;
+import br.com.dicasdeumdev.api.service.exception.DataIntegratyViolationException;
 import br.com.dicasdeumdev.api.service.exception.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,25 +29,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return repository.findByEmail(email);
-    }
-
-    @Override
     public List<User> findAll() {
         return repository.findAll();
     }
 
     @Override
-    public User create(UserDto obj) throws EmailExistenteFoundException {
-
-        Optional<User> userOptional = findByEmail(obj.getEmail());
-        if (userOptional.isPresent()) {
-           throw new EmailExistenteFoundException("Email já cadastrado para o usuário ["+userOptional.get().getNome()+"] !");
-        }
-
+    public User create(UserDto obj) {
+        findByEmail(obj);
         return repository.save(mapper.map(obj, User.class));
     }
 
+    @Override
+    public User update(UserDto obj) {
+        findByEmail(obj);
+        return repository.save(mapper.map(obj, User.class));
+    }
 
+    private void findByEmail(UserDto userDto) {
+        Optional<User> userOptional = repository.findByEmail(userDto.getEmail());
+        if (userOptional.isPresent() && ! userOptional.get().getId().equals(userDto.getId())) {
+            throw new DataIntegratyViolationException("Email já cadastrado para o usuário ["+userOptional.get().getNome()+"] !");
+        }
+    }
 }
