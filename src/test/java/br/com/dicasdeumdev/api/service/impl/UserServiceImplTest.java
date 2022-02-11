@@ -4,6 +4,7 @@ import br.com.dicasdeumdev.api.builder.UserBuilder;
 import br.com.dicasdeumdev.api.domain.User;
 import br.com.dicasdeumdev.api.domain.dto.UserDTO;
 import br.com.dicasdeumdev.api.repository.UserRepository;
+import br.com.dicasdeumdev.api.service.exception.DataIntegratyViolationException;
 import br.com.dicasdeumdev.api.service.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -94,7 +97,19 @@ class UserServiceImplTest {
     }
 
     @Test
-    void create() {
+    void whenCreateReturnUserInstance() {
+        // Scenery
+        when(repository.save(any())).thenReturn(user);
+
+        // Action
+        User response = service.create(userDTO);
+
+        // Verification
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+        assertEquals(user.getId(), response.getId());
+        assertEquals(user.getNome(), response.getNome());
+        assertEquals(user.getEmail(), response.getEmail());
     }
 
     @Test
