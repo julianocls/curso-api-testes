@@ -6,7 +6,6 @@ import br.com.dicasdeumdev.api.domain.dto.UserDTO;
 import br.com.dicasdeumdev.api.repository.UserRepository;
 import br.com.dicasdeumdev.api.service.exception.DataIntegratyViolationException;
 import br.com.dicasdeumdev.api.service.exception.ObjectNotFoundException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,11 +17,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class UserServiceImplTest {
 
@@ -124,7 +123,7 @@ class UserServiceImplTest {
         } catch (Exception ex) {
             // Verification
             assertEquals(DataIntegratyViolationException.class, ex.getClass());
-            assertEquals("Email já cadastrado para o usuário ["+userOptional.get().getNome()+"] !", ex.getMessage());
+            assertEquals("Email já cadastrado para o usuário [" + userOptional.get().getNome() + "] !", ex.getMessage());
         }
     }
 
@@ -156,12 +155,21 @@ class UserServiceImplTest {
         } catch (Exception ex) {
             // Verification
             assertEquals(DataIntegratyViolationException.class, ex.getClass());
-            assertEquals("Email já cadastrado para o usuário ["+userOptional.get().getNome()+"] !", ex.getMessage());
+            assertEquals("Email já cadastrado para o usuário [" + userOptional.get().getNome() + "] !", ex.getMessage());
         }
     }
 
     @Test
-    void delete() {
+    void whenDeleteCheckIfUserNotExists() {
+        // Scenery
+        when(repository.findById(anyInt())).thenReturn(userOptional);
+
+        // Action
+        doNothing().when(repository).deleteById(anyInt());
+        service.delete(user.getId());
+
+        // Verification
+        verify(repository, timeout(1)).deleteById(anyInt());
     }
 
     private void startUSer() {
