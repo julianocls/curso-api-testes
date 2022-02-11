@@ -129,7 +129,19 @@ class UserServiceImplTest {
     }
 
     @Test
-    void update() {
+    void whenUpdateReturnUserInstance() {
+        // Scenery
+        when(repository.save(any())).thenReturn(user);
+
+        // Action
+        User response = service.update(userDTO);
+
+        // Verification
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+        assertEquals(user.getId(), response.getId());
+        assertEquals(user.getNome(), response.getNome());
+        assertEquals(user.getEmail(), response.getEmail());
     }
 
     @Test
