@@ -1,7 +1,7 @@
 package br.com.dicasdeumdev.api.service.impl;
 
 import br.com.dicasdeumdev.api.domain.User;
-import br.com.dicasdeumdev.api.domain.dto.UserDto;
+import br.com.dicasdeumdev.api.domain.dto.UserDTO;
 import br.com.dicasdeumdev.api.repository.UserRepository;
 import br.com.dicasdeumdev.api.service.UserService;
 import br.com.dicasdeumdev.api.service.exception.DataIntegratyViolationException;
@@ -34,13 +34,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(UserDto obj) {
+    public User create(UserDTO obj) {
         findByEmail(obj);
         return repository.save(mapper.map(obj, User.class));
     }
 
     @Override
-    public User update(UserDto obj) {
+    public User update(UserDTO obj) {
         findByEmail(obj);
         return repository.save(mapper.map(obj, User.class));
     }
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         repository.deleteById(id);
     }
 
-    private void findByEmail(UserDto userDto) {
+    private void findByEmail(UserDTO userDto) {
         Optional<User> userOptional = repository.findByEmail(userDto.getEmail());
         if (userOptional.isPresent() && ! userOptional.get().getId().equals(userDto.getId())) {
             throw new DataIntegratyViolationException("Email já cadastrado para o usuário ["+userOptional.get().getNome()+"] !");

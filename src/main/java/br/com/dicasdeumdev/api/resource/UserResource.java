@@ -1,7 +1,7 @@
 package br.com.dicasdeumdev.api.resource;
 
 import br.com.dicasdeumdev.api.domain.User;
-import br.com.dicasdeumdev.api.domain.dto.UserDto;
+import br.com.dicasdeumdev.api.domain.dto.UserDTO;
 import br.com.dicasdeumdev.api.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +24,19 @@ public class UserResource {
     private ModelMapper mapper;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<UserDto> findById(@PathVariable Integer id) {
-        return ResponseEntity.ok().body(mapper.map(service.findById(id), UserDto.class));
+    public ResponseEntity<UserDTO> findById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(mapper.map(service.findById(id), UserDTO.class));
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> findAll() {
+    public ResponseEntity<List<UserDTO>> findAll() {
         return ResponseEntity
                 .ok().
-                body(service.findAll().stream().map(x -> mapper.map(x, UserDto.class)).collect(Collectors.toList()));
+                body(service.findAll().stream().map(x -> mapper.map(x, UserDTO.class)).collect(Collectors.toList()));
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> save(@RequestBody UserDto obj) {
+    public ResponseEntity<UserDTO> save(@RequestBody UserDTO obj) {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                 .path("/{id}")
                 .buildAndExpand(service.create(obj).getId()).toUri();
@@ -44,10 +44,10 @@ public class UserResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDto> update(@PathVariable Integer id, @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO userDto) {
         userDto.setId(id);
         User user = service.update(userDto);
-        return ResponseEntity.ok().body(mapper.map(user, UserDto.class));
+        return ResponseEntity.ok().body(mapper.map(user, UserDTO.class));
     }
 
     @DeleteMapping(value = "/{id}")
