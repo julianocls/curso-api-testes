@@ -69,7 +69,7 @@ class UserServiceImplTest {
 
         try {
             // Action
-            User response = service.findById(user.getId());
+            service.findById(user.getId());
         } catch (Exception ex) {
             // Verification
             assertEquals(ObjectNotFoundException.class, ex.getClass());
