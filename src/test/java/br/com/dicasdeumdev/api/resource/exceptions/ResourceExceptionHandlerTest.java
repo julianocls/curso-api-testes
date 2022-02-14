@@ -42,6 +42,8 @@ class ResourceExceptionHandlerTest {
         // Verifications
         assertNotNull(response);
         assertNotNull(response.getBody());
+        assertNotNull(response.getBody().getTimestamp());
+        assertNotNull(response.getBody().getPath());
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(ResponseEntity.class, response.getClass());
         assertEquals(StandardError.class, response.getBody().getClass());
@@ -62,6 +64,8 @@ class ResourceExceptionHandlerTest {
         // Verifications
         assertNotNull(response);
         assertNotNull(response.getBody());
+        assertNotNull(response.getBody().getTimestamp());
+        assertNotNull(response.getBody().getPath());
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(ResponseEntity.class, response.getClass());
         assertEquals(StandardError.class, response.getBody().getClass());
